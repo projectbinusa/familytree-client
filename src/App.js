@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom"; // Use Switch in v5
-import Loader from "./component/Loader"; // Adjust path as necessary
+import Loader from "./Loader"; // Adjust path as necessary
 // Import your other components
 // import Login from "./components/Login";
 // import Register from "./components/Register";
 // import Dashboard from "./components/Dashboard";
-import Navbar from "./component/Navbar";
+import Home from "./pages/Home";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -20,12 +20,8 @@ function App() {
     <BrowserRouter>
       <main>
         <Switch>
-          {" "}
-          {/* Use Switch instead of Routes in v5 */}
-          {/* Define your routes */}
-          {/* <Route path="/" component={Login} exact /> */}
-          {/* <Route path="/register" component={Register} exact /> */}
-          <Route path="/Navbar" component={Navbar} exact />
+          <Route path="/" component={Home} exact />
+          <Route path="/Home" component={Home} exact />
         </Switch>
       </main>
     </BrowserRouter>
