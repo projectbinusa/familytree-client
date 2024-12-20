@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaHome, FaInfoCircle, FaPhone, FaServer } from "react-icons/fa"; 
+import { FaHome, FaInfoCircle, FaPhone, FaServer } from "react-icons/fa";
 import images from "../asset/images.jpg";
 import { motion } from "framer-motion"; // Import framer-motion for animations
 
@@ -20,54 +20,60 @@ function Home() {
         {/* Logo dan Menu Utama */}
         <div className="flex items-center space-x-4">
           <a href="/" className="flex items-center">
-            <motion.img 
-              src={images} 
-              className="h-12" 
-              alt="Logo" 
-              width="150px" 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.img
+              src={images}
+              className="h-12"
+              alt="Logo"
+              width="150px"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
             />
           </a>
 
           {/* Menu Navigasi (Desktop) */}
           <nav className="hidden md:flex space-x-6">
-            <motion.a 
-              href="/" 
+            <motion.a
+              href="/"
               className="text-gray-600 hover:text-blue-600 flex items-center space-x-2"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.8 }}
             >
-              <FaHome /> <span>{language === "ID" ? "Pohon Keluarga" : "Family Tree"}</span>
+              <FaHome />{" "}
+              <span>
+                {language === "ID" ? "Pohon Keluarga" : "Family Tree"}
+              </span>
             </motion.a>
-            <motion.a 
-              href="/about" 
+            <motion.a
+              href="/about"
               className="text-gray-600 hover:text-blue-600 flex items-center space-x-2"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              <FaInfoCircle /> <span>{language === "ID" ? "Tentang" : "About"}</span>
+              <FaInfoCircle />{" "}
+              <span>{language === "ID" ? "Tentang" : "About"}</span>
             </motion.a>
-            <motion.a 
-              href="/services" 
+            <motion.a
+              href="/services"
               className="text-gray-600 hover:text-blue-600 flex items-center space-x-2"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <FaServer /> <span>{language === "ID" ? "Layanan" : "Services"}</span>
+              <FaServer />{" "}
+              <span>{language === "ID" ? "Layanan" : "Services"}</span>
             </motion.a>
-            <motion.a 
-              href="/contact" 
+            <motion.a
+              href="/contact"
               className="text-gray-600 hover:text-blue-600 flex items-center space-x-2"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <FaPhone /> <span>{language === "ID" ? "Kontak" : "Contact"}</span>
+              <FaPhone />{" "}
+              <span>{language === "ID" ? "Kontak" : "Contact"}</span>
             </motion.a>
           </nav>
         </div>
@@ -75,15 +81,15 @@ function Home() {
         {/* Tombol Aksi (Desktop) */}
         <div className="hidden md:flex items-center space-x-4">
           <motion.a
-            href="/sign-in"
+            href="/Login"
             className="px-4 py-2 text-sm text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {language === "ID" ? "MASUK" : "SIGN IN"}
+            {language === "ID" ? "MASUK" : "Login"}
           </motion.a>
           <motion.a
-            href="/create-account"
+            href="/Rg+123"
             className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -152,7 +158,9 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-          {language === "ID" ? "Selamat datang di Pohon Keluarga" : "Welcome to the Family Tree"}
+          {language === "ID"
+            ? "Selamat datang di Pohon Keluarga"
+            : "Welcome to the Family Tree"}
         </motion.h2>
         <motion.p
           className="text-gray-600 text-center mb-6"
@@ -172,11 +180,25 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7, duration: 1 }}
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">{language === "ID" ? "Fitur Utama" : "Main Features"}</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+            {language === "ID" ? "Fitur Utama" : "Main Features"}
+          </h3>
           <ul className="list-disc pl-5 text-gray-600">
-            <li>{language === "ID" ? "Membangun Pohon Keluarga secara interaktif" : "Build an interactive Family Tree"}</li>
-            <li>{language === "ID" ? "Menemukan hubungan antar anggota keluarga" : "Find connections between family members"}</li>
-            <li>{language === "ID" ? "Berbagi dan menyimpan informasi sejarah keluarga" : "Share and save family history information"}</li>
+            <li>
+              {language === "ID"
+                ? "Membangun Pohon Keluarga secara interaktif"
+                : "Build an interactive Family Tree"}
+            </li>
+            <li>
+              {language === "ID"
+                ? "Menemukan hubungan antar anggota keluarga"
+                : "Find connections between family members"}
+            </li>
+            <li>
+              {language === "ID"
+                ? "Berbagi dan menyimpan informasi sejarah keluarga"
+                : "Share and save family history information"}
+            </li>
           </ul>
         </motion.div>
 
@@ -188,16 +210,40 @@ function Home() {
           transition={{ delay: 0.8, duration: 1 }}
         >
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-3">{language === "ID" ? "Membangun Pohon Keluarga" : "Build a Family Tree"}</h4>
-            <p className="text-gray-600">{language === "ID" ? "Buat dan kelola pohon keluarga Anda dengan mudah." : "Create and manage your family tree with ease."}</p>
+            <h4 className="text-lg font-semibold text-gray-800 mb-3">
+              {language === "ID"
+                ? "Membangun Pohon Keluarga"
+                : "Build a Family Tree"}
+            </h4>
+            <p className="text-gray-600">
+              {language === "ID"
+                ? "Buat dan kelola pohon keluarga Anda dengan mudah."
+                : "Create and manage your family tree with ease."}
+            </p>
           </div>
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-3">{language === "ID" ? "Menemukan Koneksi Keluarga" : "Find Family Connections"}</h4>
-            <p className="text-gray-600">{language === "ID" ? "Temukan hubungan antar anggota keluarga yang lebih jauh." : "Discover deeper connections between family members."}</p>
+            <h4 className="text-lg font-semibold text-gray-800 mb-3">
+              {language === "ID"
+                ? "Menemukan Koneksi Keluarga"
+                : "Find Family Connections"}
+            </h4>
+            <p className="text-gray-600">
+              {language === "ID"
+                ? "Temukan hubungan antar anggota keluarga yang lebih jauh."
+                : "Discover deeper connections between family members."}
+            </p>
           </div>
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-3">{language === "ID" ? "Berbagi Informasi Keluarga" : "Share Family Information"}</h4>
-            <p className="text-gray-600">{language === "ID" ? "Bagikan sejarah keluarga Anda dengan anggota lainnya." : "Share your family history with other members."}</p>
+            <h4 className="text-lg font-semibold text-gray-800 mb-3">
+              {language === "ID"
+                ? "Berbagi Informasi Keluarga"
+                : "Share Family Information"}
+            </h4>
+            <p className="text-gray-600">
+              {language === "ID"
+                ? "Bagikan sejarah keluarga Anda dengan anggota lainnya."
+                : "Share your family history with other members."}
+            </p>
           </div>
         </motion.div>
 
@@ -208,8 +254,14 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 1 }}
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">{language === "ID" ? "Profil Anggota" : "Member Profiles"}</h3>
-          <p className="text-gray-600">{language === "ID" ? "Temui anggota keluarga Anda." : "Meet your family members."}</p>
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+            {language === "ID" ? "Profil Anggota" : "Member Profiles"}
+          </h3>
+          <p className="text-gray-600">
+            {language === "ID"
+              ? "Temui anggota keluarga Anda."
+              : "Meet your family members."}
+          </p>
           {/* This would ideally be replaced with dynamic content */}
           <ul className="list-disc pl-5 text-gray-600">
             <li>John Doe - Father</li>
@@ -225,8 +277,16 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 1 }}
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">{language === "ID" ? "Pembangun Pohon Keluarga Interaktif" : "Interactive Family Tree Builder"}</h3>
-          <p className="text-gray-600">{language === "ID" ? "Mulai membangun pohon keluarga Anda secara interaktif." : "Start building your family tree interactively."}</p>
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+            {language === "ID"
+              ? "Pembangun Pohon Keluarga Interaktif"
+              : "Interactive Family Tree Builder"}
+          </h3>
+          <p className="text-gray-600">
+            {language === "ID"
+              ? "Mulai membangun pohon keluarga Anda secara interaktif."
+              : "Start building your family tree interactively."}
+          </p>
           <motion.button
             className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
             whileHover={{ scale: 1.05 }}
@@ -242,12 +302,36 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 1 }}
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">{language === "ID" ? "Pertanyaan yang Sering Diajukan" : "Frequently Asked Questions"}</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+            {language === "ID"
+              ? "Pertanyaan yang Sering Diajukan"
+              : "Frequently Asked Questions"}
+          </h3>
           <ul className="text-gray-600">
-            <li><strong>{language === "ID" ? "Bagaimana cara membangun pohon keluarga?" : "How do I build a family tree?"}</strong></li>
-            <p>{language === "ID" ? "Ikuti langkah-langkah di halaman pembuat pohon keluarga." : "Follow the steps on the family tree builder page."}</p>
-            <li><strong>{language === "ID" ? "Apa yang harus saya lakukan jika saya lupa kata sandi?" : "What should I do if I forget my password?"}</strong></li>
-            <p>{language === "ID" ? "Gunakan opsi pemulihan kata sandi di halaman masuk." : "Use the password recovery option on the sign-in page."}</p>
+            <li>
+              <strong>
+                {language === "ID"
+                  ? "Bagaimana cara membangun pohon keluarga?"
+                  : "How do I build a family tree?"}
+              </strong>
+            </li>
+            <p>
+              {language === "ID"
+                ? "Ikuti langkah-langkah di halaman pembuat pohon keluarga."
+                : "Follow the steps on the family tree builder page."}
+            </p>
+            <li>
+              <strong>
+                {language === "ID"
+                  ? "Apa yang harus saya lakukan jika saya lupa kata sandi?"
+                  : "What should I do if I forget my password?"}
+              </strong>
+            </li>
+            <p>
+              {language === "ID"
+                ? "Gunakan opsi pemulihan kata sandi di halaman masuk."
+                : "Use the password recovery option on the sign-in page."}
+            </p>
           </ul>
         </motion.div>
       </div>
