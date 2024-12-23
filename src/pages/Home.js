@@ -89,7 +89,7 @@ function Home() {
             {language === "ID" ? "MASUK" : "Login"}
           </motion.a>
           <motion.a
-            href="/Rg+123"
+            href="/Register"
             className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
