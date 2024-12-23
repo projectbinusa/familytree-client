@@ -2,31 +2,25 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { API_LOGIN } from "../utils/BaseUrl";
 
 function Login() {
-  const [email, setEmail] = useState(""); // Mengganti state username menjadi email
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State untuk toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requestBody = {
-      email,
-      password,
-    };
-
     try {
-      const response = await axios.post(`${API_LOGIN}`, requestBody, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.post("http://localhost:2029/api/login", {
+        email,
+        password,
       });
 
       if (response.status === 200) {
-        const { token } = response.data;
+        const { token, data } = response.data;
+
         Swal.fire({
           icon: "success",
           title: "Login successful!",
@@ -34,28 +28,25 @@ function Login() {
           timer: 1500,
         });
 
+        // Simpan token ke localStorage
         localStorage.setItem("authToken", token);
+
+        // Optional: Simpan data pengguna
+        localStorage.setItem("userData", JSON.stringify(data));
+
         history.push("/dashboard");
         setTimeout(() => {
           window.location.reload();
         }, 1500);
       }
     } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          icon: "error",
-          title: "Login failed!",
-          text: error.response.data.message || "Invalid credentials.",
-          showConfirmButton: true,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Login failed!",
-          text: "Unable to connect to the server.",
-          showConfirmButton: true,
-        });
-      }
+      Swal.fire({
+        icon: "error",
+        title: "Login failed!",
+        text:
+          error.response?.data || "Invalid credentials or server error occurred.",
+        showConfirmButton: true,
+      });
     }
   };
 
@@ -83,13 +74,13 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            placeholder="Masukkan Email"
+            placeholder="Enter your email"
             required
           />
         </div>
 
         {/* Password Input */}
-        <div className="mb-5 relative">
+        <div className="mb-5">
           <label
             htmlFor="password"
             className="block mb-2 text-sm font-medium text-gray-700"
@@ -103,10 +94,9 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Masukkan Password"
+              placeholder="Enter your password"
               required
             />
-            {/* Toggle Password Visibility */}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -131,7 +121,7 @@ function Login() {
         <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-400">
           Don't have an account?{" "}
           <a
-            href="/Rg+123"
+            href="/register"
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
             Register Now
