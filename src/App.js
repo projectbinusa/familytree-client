@@ -28,7 +28,7 @@ function App() {
           <Route path="/Register" component={Register} exact />
           <PrivateRoute path="/Dashboard" component={Dashboard} exact />
           <PrivateRoute path="/TambahAnggota" component={TambahAnggota} exact />
-          <PrivateRoute path="/Anggota" component={Anggota} exact />
+          <PrivateRoute path="/Anggota/:idJudul" component={Anggota} exact />
         </Switch>
       </main>
     </BrowserRouter>

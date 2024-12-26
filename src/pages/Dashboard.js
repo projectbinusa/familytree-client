@@ -12,6 +12,7 @@ function Dashboard() {
   const [judulData, setJudulData] = useState({ judulKeluarga: "" });
   const [editJudulData, setEditJudulData] = useState({ judulKeluarga: "" }); // State for editing
   const [selectedJudulId, setSelectedJudulId] = useState(null); // To store the ID of the selected item for editing
+  const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetching
   const history = useHistory();
 
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -113,7 +114,12 @@ function Dashboard() {
 
   useEffect(() => {
     fetchJudulList();
-  }, []);
+  }, [shouldRefresh]); // Trigger fetching whenever `shouldRefresh` changes
+
+  const handleViewFamily = (id) => {
+    history.push(`/Anggota/${id}`);
+    setShouldRefresh((prev) => !prev); // Toggle refresh state after navigating
+  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -258,7 +264,7 @@ function Dashboard() {
             <div>
               <h3 className="text-lg font-bold mb-2">{item.judulKeluarga}</h3>
               <button
-                onClick={() => history.push("/Anggota")}
+                onClick={() => handleViewFamily(item.id)} // Trigger page change and refresh
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2"
               >
                 Lihat Keluarga
