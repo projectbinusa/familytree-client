@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { API_LOGIN } from "../utils/BaseUrl";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,11 +10,18 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
 
+  useEffect(() => {
+    document.body.style.backgroundColor = "white";
+    return () => {
+      document.body.style.backgroundColor = null;
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:2029/api/login", {
+      const response = await axios.post(`${API_LOGIN}/login`, {
         email,
         password,
       });
@@ -28,10 +36,7 @@ function Login() {
           timer: 1500,
         });
 
-        // Simpan token ke localStorage
         localStorage.setItem("authToken", token);
-
-        // Optional: Simpan data pengguna
         localStorage.setItem("userData", JSON.stringify(data));
 
         history.push("/dashboard");
@@ -44,20 +49,21 @@ function Login() {
         icon: "error",
         title: "Login failed!",
         text:
-          error.response?.data || "Invalid credentials or server error occurred.",
+          error.response?.data ||
+          "Invalid credentials or server error occurred.",
         showConfirmButton: true,
       });
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white">
+    <div className="flex items-center justify-center h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="max-w-sm w-full bg-gradient-to-b from-gray-800 to-gray-200 p-8 rounded-2xl shadow-xl border-t-4 border-blue-500 dark:bg-gray-800"
+        className="max-w-sm w-full bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-500"
       >
-        <h1 className="text-2xl font-extrabold text-center mb-6 text-gray-800 dark:text-white">
-          Welcome Back!
+        <h1 className="text-2xl font-extrabold text-center mb-6 text-blue-500">
+          Login
         </h1>
 
         {/* Email Input */}
@@ -75,6 +81,7 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="Enter your email"
+            autoComplete="off"
             required
           />
         </div>
@@ -94,36 +101,34 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Enter your password"
+              placeholder="Masukkan Password"
               required
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
-            >
-              <i
-                className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}
-              ></i>
-            </button>
+            <div className="mt-2">
+              <label className="text-sm text-gray-700 flex items-center">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={showPassword}
+                  onChange={(e) => setShowPassword(e.target.checked)}
+                />
+                Tampilkan Password
+              </label>
+            </div>
           </div>
         </div>
-
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:focus:ring-blue-800 shadow-md"
+          className="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center shadow-md"
         >
           Sign In
         </button>
 
         {/* Register Link */}
-        <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-400">
+        <p className="text-center text-sm mt-4 text-gray-600">
           Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-blue-600 hover:underline dark:text-blue-400"
-          >
+          <a href="/register" className="text-blue-500 hover:underline">
             Register Now
           </a>
         </p>
