@@ -1,29 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
-import user from "../../asset/user.png"; // Import user image
-import { API_JUDUL2 } from "../../utils/BaseUrl"; // Import BaseUrl.js
+import user from "../../asset/user.png"; // Importing the image
+import { API_ANGGOTA } from "../../utils/BaseUrl";
 
 function Anggota() {
-  const [dropdownOpen, setDropdownOpen] = useState(null); // Track which dropdown is open
-  const [anggotaList, setAnggotaList] = useState([]); // Store Anggota data
-  const history = useHistory();
+  const { idJudul } = useParams();
+  const [anggotaList, setAnggotaList] = useState([]);
+  const [newAnggotaData, setNewAnggotaData] = useState({
+    nama: "",
+    gender: "",
+    tanggalLahir: "",
+    idJudul: idJudul,
+  });
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [showOptions, setShowOptions] = useState(null);
 
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const idJudul = userData ? userData.idJudul : null; // Get idJudul from the logged-in user's data
+  const idAdmin = userData ? userData.id : null;
 
-  // Fetch all Anggota by Judul
   const fetchAnggotaList = async () => {
     try {
-      const response = await axios.get(`${API_JUDUL2}/anggota/all-by-judul/${idJudul}`);
-      setAnggotaList(response.data);
+      const response = await axios.get(`${API_ANGGOTA}/all-by-judul/${idJudul}`);
+      const anggotaListWithCorrectIdJudul = response.data.map((anggota) => ({
+        ...anggota,
+        idJudul: anggota.idJudul.id,
+      }));
+      setAnggotaList(anggotaListWithCorrectIdJudul);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("Failed to fetch anggota:", error);
     }
   };
 
-  // Handle Delete Anggota
+  useEffect(() => {
+    if (idJudul) {
+      fetchAnggotaList();
+    }
+  }, [idJudul]);
+
   const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -36,134 +51,166 @@ function Anggota() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`${API_JUDUL2}/delete/${id}`);
-          Swal.fire("Deleted!", "Your data has been deleted.", "success");
-          setAnggotaList(anggotaList.filter((item) => item.id !== id)); // Remove item from list after successful deletion
+          await axios.delete(`${API_ANGGOTA}/delete/${id}`);
+          Swal.fire("Deleted!", "The member has been deleted.", "success");
+          setAnggotaList(anggotaList.filter((item) => item.id !== id));
         } catch (error) {
-          Swal.fire("Error!", "Failed to delete data.", "error");
+          Swal.fire("Error!", "Failed to delete the member.", "error");
         }
       }
     });
   };
 
-  // Toggle dropdown visibility
-  const toggleDropdown = (index) => {
-    setDropdownOpen(dropdownOpen === index ? null : index); // Toggle between open and close
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    if (!idAdmin || !newAnggotaData.idJudul) {
+      Swal.fire("Error!", "Admin ID or Judul ID is missing", "error");
+      return;
+    }
+    try {
+      const response = await axios.post(`${API_ANGGOTA}/tambahByIdAdmin/${idAdmin}`, newAnggotaData);
+      Swal.fire("Success!", "Member has been added.", "success");
+      setAnggotaList([...anggotaList, response.data]);
+      setAddModalOpen(false);
+    } catch (error) {
+      Swal.fire("Error!", "Failed to add member.", "error");
+    }
   };
 
-  const handleLogout = () => {
-    // Perform logout logic (clear localStorage, etc.)
-    localStorage.removeItem("userData");
-    history.push("/login"); // Redirect to login page after logout
-  };
-
-  const handleProfile = () => {
-    // Handle view profile logic
-    history.push("/profile"); // Redirect to profile page
-  };
-
-  useEffect(() => {
-    fetchAnggotaList();
-  }, []);
-
-  return (
-    <div className="bg-white min-h-screen">
-      {/* Navbar and Profile Dropdown */}
-      <div className="flex justify-between items-center p-4 bg-blue-500 text-white">
-        <h1 className="text-2xl font-bold">Anggota</h1>
-        <div className="relative">
-          <button
-            onClick={() => toggleDropdown("profile")}
-            className="flex items-center space-x-2 border border-gray-300 rounded px-4 py-2 bg-white text-blue-500"
-          >
-            <span>Profile</span>
-            <svg
-              className="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {dropdownOpen === "profile" && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-              <ul className="text-sm text-gray-700">
-                <li className="hover:bg-gray-100">
-                  <button
-                    onClick={handleProfile}
-                    className="block px-4 py-2 w-full text-left"
-                  >
-                    Profile
-                  </button>
-                </li>
-                <li className="hover:bg-gray-100">
-                  <button
-                    onClick={handleLogout}
-                    className="block px-4 py-2 w-full text-left text-red-500"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
+  // Recursive function to render the tree with lines and "+" icons
+  const renderTree = (anggota) => {
+    return (
+      <li key={anggota.id} className="relative">
+        <div className="flex flex-col items-center">
+          <img
+            src={user}
+            alt={anggota.nama}
+            className="w-20 h-20 rounded-full border-2 border-gray-300 cursor-pointer"
+            onClick={() => setShowOptions(showOptions === anggota.id ? null : anggota.id)}
+          />
+          <h3 className="mt-2 font-medium text-lg">{anggota.nama}</h3>
+          {showOptions === anggota.id && (
+            <div className="absolute top-20 bg-white shadow-md rounded-lg p-2 flex flex-col">
+              <button className="text-blue-500 hover:text-blue-600 mb-2">Detail</button>
+              <button className="text-yellow-500 hover:text-yellow-600 mb-2">Edit</button>
+              <button
+                className="text-red-500 hover:text-red-600"
+                onClick={() => handleDelete(anggota.id)}
+              >
+                Delete
+              </button>
             </div>
           )}
         </div>
+
+        {/* Branching lines with "+" icons */}
+        <div className="absolute top-12 left-0 right-0 flex justify-between items-center">
+          <div className="border-t-2 border-gray-300 w-20"></div>
+          <div className="flex flex-col items-center">
+            <span className="bg-gray-200 rounded-full p-2 text-lg font-bold">+</span>
+            <div className="border-t-2 border-gray-300 w-20 mt-2"></div>
+          </div>
+        </div>
+
+        {/* Render parent */}
+        {anggota.parent && (
+          <div className="absolute top-[-20px] left-0 right-0 flex justify-center items-center">
+            <div className="border-t-2 border-gray-300 w-20"></div>
+            <span className="bg-gray-200 rounded-full p-2 text-lg font-bold">↑</span>
+            <div className="border-t-2 border-gray-300 w-20 mt-2"></div>
+          </div>
+        )}
+
+        {/* Render child members */}
+        {anggota.children && (
+          <ul className="pl-6 border-l-2 border-gray-300 mt-4">
+            {anggota.children.map(renderTree)}
+          </ul>
+        )}
+
+        {/* Render partner members */}
+        {anggota.partner && (
+          <ul className="flex justify-center items-center mt-4">
+            {anggota.partner.map((partner) => (
+              <li key={partner.id} className="ml-8">{renderTree(partner)}</li>
+            ))}
+          </ul>
+        )}
+      </li>
+    );
+  };
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-xl font-bold text-center mb-6">Family Tree</h1>
+
+      {anggotaList.length === 0 && (
+        <div className="text-center mb-4">
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-all duration-300"
+          >
+            Add Member
+          </button>
+        </div>
+      )}
+
+      <div className="flex justify-center items-start">
+        <ul className="flex flex-col items-center">{anggotaList.filter((item) => !item.parentId).map(renderTree)}</ul>
       </div>
 
-      {/* Anggota List */}
-      <div className="max-w-screen-xl mx-auto px-4 py-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {anggotaList.map((item, index) => (
-          <div
-            key={index}
-            className="bg-white p-4 border border-gray-200 rounded shadow-md relative flex flex-col items-center"
-          >
-            {/* User Image */}
-            <img
-              src={user} // Path to the imported user image
-              alt="User"
-              className="rounded-full w-16 h-16 mb-4 cursor-pointer" // Small clickable image
-              onClick={() => toggleDropdown(index)} // Show the options when clicked
-            />
-            <h3 className="text-lg font-bold mb-2">{item.nama}</h3>
-            <button
-              onClick={() => history.push(`/anggota/${item.id}`)} // Redirect to Anggota detail page
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2"
-            >
-              Lihat Anggota
-            </button>
-            {/* Dropdown Menu */}
-            {dropdownOpen === index && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                <ul className="text-sm text-gray-700">
-                  <li className="hover:bg-gray-100">
-                    <button
-                      onClick={() => history.push(`/anggota/edit/${item.id}`)} // Edit page
-                      className="block px-4 py-2 w-full text-left"
-                    >
-                      Edit
-                    </button>
-                  </li>
-                  <li className="hover:bg-gray-100">
-                    <button
-                      onClick={() => handleDelete(item.id)} // Delete action
-                      className="block px-4 py-2 w-full text-left text-red-500"
-                    >
-                      Hapus
-                    </button>
-                  </li>
-                </ul>
+      {/* Add Anggota Modal */}
+      {addModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-96">
+            <h2 className="text-lg font-bold mb-4">Add Member</h2>
+            <form onSubmit={handleAddSubmit}>
+              <label className="block mb-2 text-sm font-medium">Name</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded mb-4"
+                value={newAnggotaData.nama}
+                onChange={(e) => setNewAnggotaData({ ...newAnggotaData, nama: e.target.value })}
+                required
+              />
+              <label className="block mb-2 text-sm font-medium">Gender</label>
+              <select
+                className="w-full p-2 border rounded mb-4"
+                value={newAnggotaData.gender}
+                onChange={(e) => setNewAnggotaData({ ...newAnggotaData, gender: e.target.value })}
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <label className="block mb-2 text-sm font-medium">Date of Birth</label>
+              <input
+                type="date"
+                className="w-full p-2 border rounded mb-4"
+                value={newAnggotaData.tanggalLahir}
+                onChange={(e) => setNewAnggotaData({ ...newAnggotaData, tanggalLahir: e.target.value })}
+                required
+              />
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => setAddModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  Save
+                </button>
               </div>
-            )}
+            </form>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
