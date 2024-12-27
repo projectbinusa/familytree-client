@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import TambahAnggota from "./pages/anggota/TambahAnggota";
 import Anggota from "./pages/anggota/Anggota";
 import PrivateRoute from "./routes/PrivateRoute";
+import EditAnggota from "./pages/anggota/EditAnggota";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -28,6 +29,7 @@ function App() {
           <Route path="/Register" component={Register} exact />
           <PrivateRoute path="/Dashboard" component={Dashboard} exact />
           <PrivateRoute path="/TambahAnggota" component={TambahAnggota} exact />
+          <PrivateRoute path="/EditAnggota/:id" component={EditAnggota} exact />
           <PrivateRoute path="/Anggota/:idJudul" component={Anggota} exact />
         </Switch>
       </main>
